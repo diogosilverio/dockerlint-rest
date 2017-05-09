@@ -1,0 +1,30 @@
+{
+  "name": "dockerlint-rest",
+  "version": "1.0.0",
+  "description": "Dockerlint rest.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diogosilverio/dockerlint-rest.git"
+  },
+  "keywords": [
+    "dockerlint"
+  ],
+  "author": "Diogo Silvério",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/diogosilverio/dockerlint-rest/issues"
+  },
+  "homepage": "https://github.com/diogosilverio/dockerlint-rest#readme",
+  "dependencies": {
+    "dockerlint": "^0.3.1",
+    "express": "^4.15.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.0.35",
+    "@types/node": "^6.0.71"
+  }
+}
