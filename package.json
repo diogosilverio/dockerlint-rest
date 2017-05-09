@@ -4,7 +4,9 @@
   "description": "Dockerlint rest.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "APP_PATH=. npm run build:live",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts"
   },
   "repository": {
     "type": "git",
@@ -20,11 +22,14 @@
   },
   "homepage": "https://github.com/diogosilverio/dockerlint-rest#readme",
   "dependencies": {
+    "body-parser": "^1.17.1",
     "dockerlint": "^0.3.1",
     "express": "^4.15.2"
   },
   "devDependencies": {
     "@types/express": "^4.0.35",
-    "@types/node": "^6.0.71"
+    "@types/node": "^6.0.71",
+    "nodemon": "^1.11.0",
+    "ts-node": "^3.0.4"
   }
 }

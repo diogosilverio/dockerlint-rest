@@ -2,6 +2,8 @@
   "compilerOptions": {
     "target": "es2015",
     "module": "commonjs",
-    "strict": true
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   }
 }
