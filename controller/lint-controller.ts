@@ -26,7 +26,6 @@ export class DockerlintController {
                 if (!dockerFile) {
                     res.status(400).send({'error': true, 'message': 'Invalid/empty Dockerfile provided'});
                 } else {
-                    console.log(dockerFile);
                     res.status(200).send({'error': false, 'message': 'Zero errors =D'});
                 }
             } else {
