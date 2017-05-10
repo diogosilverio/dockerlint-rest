@@ -2,13 +2,16 @@
  * Created by diogo on 08/05/17.
  */
 import {Request, Response, Router} from "express";
+import {LintService} from "../service/lint-service";
 
 export class DockerlintController {
 
     private router: Router;
+    private service: LintService;
 
     constructor(){
         this.router = Router();
+        this.service = new LintService();
 
         this.registerLintAction();
     }
@@ -26,7 +29,8 @@ export class DockerlintController {
                 if (!dockerFile) {
                     res.status(400).send({'error': true, 'message': 'Invalid/empty Dockerfile provided'});
                 } else {
-                    res.status(200).send({'error': false, 'message': 'Zero errors =D'});
+                    const result = await this.service.lint(dockerFile.dockerFile);
+                    res.status(200).send({'error': result.status.failed, 'result': result});
                 }
             } else {
                 res.status(406).send({'error': true, 'message': 'No body provided'});
