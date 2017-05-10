@@ -1,3 +1,1 @@
-FROsM tuamae:69
-RUN []
-#
+FROM image:7

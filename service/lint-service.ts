@@ -47,10 +47,10 @@ export class LintService{
         const fileName = `/tmp/${uuid()}`;
 
         await this.writeFile(dockerFile, fileName);
-        this.patchDockerlintUtils(fileName);
+        this.patchDockerlintUtils();
         this.patchDockerlintLog();
 
-        const result = this.checkDockerfile();
+        const result = this.checkDockerfile(fileName);
 
         await fs.unlink(fileName);
 
@@ -60,17 +60,16 @@ export class LintService{
     /**
      * Patching temp file name to args.
      *
-     * @param fileName Temporary Dockerfile generated.
      */
-    private patchDockerlintUtils(fileName: string){
+    private patchDockerlintUtils(){
         utils.failures = [];
-
-        const fnRun = cli.run;
-
-        cli.run = function (args) {
-            args.file = fileName;
-            fnRun.apply(this, arguments);
-        }
+        utils.status = {
+            'fatals': 0,
+            'errors': 0,
+            'warnings': 0,
+            'infos': 0
+        };
+        utils.errorFound = false;
     }
 
     /**
@@ -78,6 +77,28 @@ export class LintService{
      */
     private patchDockerlintLog(){
         utils.log = function (level, message) {
+
+            switch (level){
+                case 'FATAL':{
+                    utils.errorFound = true;
+                    this.status.fatals += 1;
+                    break;
+                }
+                case 'ERROR':{
+                    utils.errorFound = true;
+                    this.status.errors += 1;
+                    break;
+                }
+                case 'WARN':{
+                    this.status.warnings += 1;
+                    break;
+                }
+                case 'INFO':{
+                    this.status.infos += 1;
+                    break;
+                }
+            }
+
             this.failures.push({'level': level, 'message': message});
         };
     }
@@ -91,13 +112,27 @@ export class LintService{
         return new Buffer(b64.toByteArray(dockerFile)).toString();
     }
 
-    private checkDockerfile() {
+    private async checkDockerfile(fileName: string) {
         try{
-            require("dockerlint");
+            const args = {'file': fileName};
+            cli.run(args);
+
         } catch(e){
             console.log(e);
         }
 
-        return utils.failures;
+        return {
+            'checks': utils.failures,
+            'status': {
+                'failed': utils.errorFound,
+                'message': (utils.errorFound ? "Errors were found." : "No errors found.")
+            },
+            'frequencies': {
+                'info': utils.status.infos,
+                'warning': utils.status.warnings,
+                'error': utils.status.errors,
+                'fatal': utils.status.fatals
+            }};
     }
+
 }
